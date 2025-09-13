@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import Card from "./components/Card"
 import './styles/App.css'
+import { motion, AnimatePresence } from "framer-motion";
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
+  exit: { opacity: 0, y: -20, scale: 0.9, transition: { duration: 0.2 } }
+};
 
 export default function Clock() {
 const [posts, setPosts] = useState([]);
@@ -81,10 +88,23 @@ const [cantidad, setCantidad] = useState(10);
           </select>
         </div>
       </div>
-      <div className="flex flex-row w-min-full h-min-screen flex-wrap justify-center content-center space-around gap-5 py-2 mt-10">
+      <div className="flex flex-row w-min-full h-min-screen flex-wrap justify-center content-center space-around gap-5 py-2 mt-10 mx-6 lg:mx-0">
 
         {posts.map((post) => (
-          <Card onClick={() => selectPokemon(obtenerIdPokemon(post.url))} key={obtenerIdPokemon(post.url)} id={obtenerIdPokemon(post.url)} name={post.name} />
+          <motion.div
+            key={obtenerIdPokemon(post.url)}
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            layout
+          >
+            <Card
+              onClick={() => selectPokemon(obtenerIdPokemon(post.url))}
+              id={obtenerIdPokemon(post.url)}
+              name={post.name}
+            />
+          </motion.div>
         ))}
       </div>
 
