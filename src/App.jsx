@@ -5,11 +5,18 @@ import './styles/App.css'
 export default function Clock() {
 const [posts, setPosts] = useState([]);
 const [selected, setSelected] = useState([]);
+const [update, setUpdate] = useState(0);
 const [aciertos, setAciertos] = useState(0);
+const [highScore, setHighScore] = useState(0);
 const [cantidad, setCantidad] = useState(10);
 
   function actualizarCantidad(e) {
     setCantidad(e.target.value)
+  }
+
+  function actualizarPokemones() {
+    const tempUpdate = update == 1 ? 0 : 1;
+    setUpdate(tempUpdate)
   }
 
    useEffect(() => {
@@ -23,7 +30,7 @@ const [cantidad, setCantidad] = useState(10);
          .catch((err) => {
             console.log(err.message);
          });
-   }, [cantidad]);
+   }, [cantidad,update]);
 
    const getRandomArbitrary = (min, max) => {
     return Math.random() * (max - min) + min;
@@ -41,6 +48,9 @@ const [cantidad, setCantidad] = useState(10);
     } else {
       setAciertos(aciertos + 1)
       setSelected(prev => [...prev, id]);
+      if (aciertos + 1 > highScore) {
+        setHighScore(aciertos + 1);
+      }
       sortPokemons()
     }
   }
@@ -55,8 +65,12 @@ const [cantidad, setCantidad] = useState(10);
   return (
     <div>
       <div className="flex justify-around">
-        <span className={aciertos === 0 ? 'text-red-500' : 'text-green-600'}>Aciertos: {aciertos}</span>
-        <div>
+        <div className="flex flex-col text-left">
+          <span>High Score: {highScore}</span>
+          <span className={aciertos === 0 ? 'text-red-500' : 'text-green-600'}>Aciertos: {aciertos}</span>
+        </div>
+        <button type="button" className="w-32 rounded shadow-lg transition-transform duration-200 hover:scale-105 hover:cursor-pointer" onClick={actualizarPokemones}>Actualizar</button>
+        <div className="py-auto text-center">
           <label htmlFor="cantidad">Cantidad: </label>
           <select name="cantidad" id="cantidad" onChange={actualizarCantidad}>
             {Array.from({ length: 11 }, (_, i) => i + 10).map((num) => (
